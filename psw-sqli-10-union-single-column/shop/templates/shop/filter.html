@@ -1,0 +1,32 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ category }} &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2>Category: {{ category|default:"(none)" }}</h2>
+        <p><a href="{% url 'home' %}">&larr; back to categories</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Executed SQL (shown for training purposes)</h3>
+        <pre class="sql">{{ executed_sql }}</pre>
+    </div>
+
+    {% if error %}
+        <div class="card">
+            <h3>Database error</h3>
+            <div class="error">{{ error }}</div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>Results ({{ row_count }})</h3>
+        {% for name in displayed_names %}
+            <div class="product">
+                <strong>{{ name|default_if_none:"" }}</strong>
+            </div>
+        {% empty %}
+            <p>No rows returned.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

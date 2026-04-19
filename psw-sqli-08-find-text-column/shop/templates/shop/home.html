@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if challenge %}
+        <div class="challenge-banner">
+            <div>Your UNION probe string for this deployment:</div>
+            <div style="margin-top:0.4rem;">
+                <code>{{ challenge.token }}</code>
+            </div>
+            <div style="margin-top:0.4rem; font-size:0.9rem;">
+                Surface this string through the product filter and the lab is captured.
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <h1>Welcome</h1>
+        <p>Browse our collection by category.</p>
+        <h3>Categories</h3>
+        <div class="category-list">
+            {% for category in categories %}
+                <a href="{% url 'filter_products' %}?category={{ category }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

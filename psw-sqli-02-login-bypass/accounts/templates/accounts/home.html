@@ -1,0 +1,14 @@
+{% extends "accounts/base.html" %}
+{% block title %}Secure Portal &mdash; Home{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>Welcome</h1>
+        {% if user %}
+            <p>You are signed in as <strong>{{ user.username }}</strong>.</p>
+            <p><a href="{% url 'my_account' %}">Go to your account &rarr;</a></p>
+        {% else %}
+            <p>Please <a href="{% url 'login' %}">sign in</a> to access your account.</p>
+        {% endif %}
+    </div>
+{% endblock %}

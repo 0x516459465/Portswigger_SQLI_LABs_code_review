@@ -1,0 +1,25 @@
+name: psw-sqli-18-filter-bypass-xml-encoding
+
+services:
+  web:
+    build: .
+    image: psw-sqli-18-filter-bypass-xml-encoding:latest
+    container_name: psw-sqli-18-filter-bypass-xml-encoding
+    hostname: psw-sqli-18-filter-bypass-xml-encoding
+    ports:
+      - "127.0.0.1:18018:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-18-filter-bypass-xml-encoding"
+      - "lab.title=SQLi with filter bypass via XML encoding"
+    networks:
+      - psw-sqli-18-filter-bypass-xml-encoding-net
+
+networks:
+  psw-sqli-18-filter-bypass-xml-encoding-net:
+    name: psw-sqli-18-filter-bypass-xml-encoding-net
+    driver: bridge

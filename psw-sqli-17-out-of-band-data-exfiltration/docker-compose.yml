@@ -1,0 +1,74 @@
+name: psw-sqli-17-out-of-band-data-exfiltration
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: psw-sqli-17-out-of-band-data-exfiltration-db
+    hostname: db
+    environment:
+      POSTGRES_DB: labdb
+      POSTGRES_USER: labuser
+      POSTGRES_PASSWORD: labpass
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U labuser -d labdb"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-17-out-of-band-data-exfiltration"
+      - "lab.role=database"
+    networks:
+      - psw-sqli-17-out-of-band-data-exfiltration-net
+
+  oob:
+    build: ./oob
+    image: psw-sqli-17-out-of-band-data-exfiltration-oob:latest
+    container_name: psw-sqli-17-out-of-band-data-exfiltration-oob
+    hostname: oob
+    restart: "no"
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-17-out-of-band-data-exfiltration"
+      - "lab.role=oob-recorder"
+    networks:
+      - psw-sqli-17-out-of-band-data-exfiltration-net
+
+  web:
+    build: .
+    image: psw-sqli-17-out-of-band-data-exfiltration:latest
+    container_name: psw-sqli-17-out-of-band-data-exfiltration
+    hostname: psw-sqli-17-out-of-band-data-exfiltration
+    depends_on:
+      db:
+        condition: service_healthy
+      oob:
+        condition: service_started
+    ports:
+      - "127.0.0.1:18017:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+      - POSTGRES_DB=labdb
+      - POSTGRES_USER=labuser
+      - POSTGRES_PASSWORD=labpass
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - OOB_LOG_URL=http://oob:8080/log
+      - OOB_HOSTNAME=oob
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-17-out-of-band-data-exfiltration"
+      - "lab.title=SQLi blind - out-of-band data exfiltration"
+    networks:
+      - psw-sqli-17-out-of-band-data-exfiltration-net
+
+networks:
+  psw-sqli-17-out-of-band-data-exfiltration-net:
+    name: psw-sqli-17-out-of-band-data-exfiltration-net
+    driver: bridge

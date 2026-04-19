@@ -1,0 +1,25 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table, but never reflects the
+        result - successful queries always return an identical 200 response. A SQL
+        error, however, returns HTTP 500. Use that error/no-error channel to extract
+        the administrator password from the <code>users</code> table one character at
+        a time, then log in at <a href="{% url 'login' %}">/login</a>. SQLite tip:
+        <code>abs(-9223372036854775808)</code> raises an integer-overflow error -
+        wrap it in a <code>CASE</code> to make the error conditional on your
+        predicate.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        {% if current_user %}
+            <p>Signed in as <strong>{{ current_user.username }}</strong>.</p>
+        {% else %}
+            <p>Browse our collection, or <a href="{% url 'login' %}">sign in</a>.</p>
+        {% endif %}
+    </div>
+{% endblock %}

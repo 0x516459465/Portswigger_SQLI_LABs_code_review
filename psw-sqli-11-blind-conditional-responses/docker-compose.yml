@@ -1,0 +1,25 @@
+name: psw-sqli-11-blind-conditional-responses
+
+services:
+  web:
+    build: .
+    image: psw-sqli-11-blind-conditional-responses:latest
+    container_name: psw-sqli-11-blind-conditional-responses
+    hostname: psw-sqli-11-blind-conditional-responses
+    ports:
+      - "127.0.0.1:18011:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-11-blind-conditional-responses"
+      - "lab.title=SQLi blind - conditional responses"
+    networks:
+      - psw-sqli-11-blind-conditional-responses-net
+
+networks:
+  psw-sqli-11-blind-conditional-responses-net:
+    name: psw-sqli-11-blind-conditional-responses-net
+    driver: bridge

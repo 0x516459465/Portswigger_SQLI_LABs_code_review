@@ -1,0 +1,41 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ category }} &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if solved %}
+        <div class="solved-banner">
+            <div>FLAG CAPTURED &mdash; you surfaced a hidden record via the WHERE clause.</div>
+            <div style="margin-top:0.5rem; font-family:monospace; font-size:1.05rem;">{{ flag }}</div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>Category: {{ category|default:"(none)" }}</h2>
+        <p><a href="{% url 'home' %}">&larr; back to categories</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Executed SQL (shown for training purposes)</h3>
+        <pre class="sql">{{ executed_sql }}</pre>
+    </div>
+
+    <div class="card">
+        <h3>Results ({{ products|length }})</h3>
+        {% for p in products %}
+            <div class="product {% if not p.released %}hidden-product{% endif %}">
+                <strong>{{ p.name }}</strong>
+                {% if p.released %}
+                    <span class="badge released">released</span>
+                {% else %}
+                    <span class="badge unreleased">UNRELEASED</span>
+                {% endif %}
+                <div><em>{{ p.category }}</em></div>
+                <div>{{ p.description }}</div>
+                <div>&pound;{{ p.price }}</div>
+            </div>
+            <hr>
+        {% empty %}
+            <p>No products matched.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

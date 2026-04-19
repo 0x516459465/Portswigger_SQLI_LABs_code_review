@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if tracked %}
+        <div class="welcome-banner">Welcome back!</div>
+    {% endif %}
+
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table. A successful match renders
+        the "Welcome back!" banner; anything else (including SQL errors) renders
+        nothing. A <code>users</code> table with <code>username</code> and
+        <code>password</code> columns also exists &mdash; extract the administrator
+        password one character at a time through the cookie side channel, then log in
+        at <a href="{% url 'login' %}">/login</a>.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        {% if current_user %}
+            <p>Signed in as <strong>{{ current_user.username }}</strong>.</p>
+        {% else %}
+            <p>Browse our collection, or <a href="{% url 'login' %}">sign in</a>.</p>
+        {% endif %}
+    </div>
+{% endblock %}

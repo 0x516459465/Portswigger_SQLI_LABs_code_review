@@ -1,0 +1,79 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> each product has a client-side
+        <em>Check stock</em> button that posts an XML body to
+        <code>POST /product/stock</code>:
+        <br><br>
+        <code>&lt;stockCheck&gt;&lt;productId&gt;1&lt;/productId&gt;&lt;storeId&gt;1&lt;/storeId&gt;&lt;/stockCheck&gt;</code>
+        <br><br>
+        The server rejects (HTTP 403) any request whose raw body contains
+        <code>SELECT</code>, <code>UNION</code>, <code>FROM</code>, or
+        <code>WHERE</code>. The blocklist check runs on the bytes
+        <em>before</em> the XML parser does. Because the XML parser
+        decodes numeric character references (<code>&amp;#x55;</code> &rarr;
+        <code>U</code>), encoding even one character of a keyword smuggles
+        it past the filter; by the time the productId reaches the SQL
+        string the keyword is back. The first column of the stock query
+        is reflected verbatim in the response body &mdash; in-band UNION
+        extraction of the administrator password fits in a single
+        request. Then <a href="{% url 'login' %}">sign in</a> to claim
+        the flag.
+    </div>
+
+    <div class="card">
+        <h1>Catalog</h1>
+        <div class="products">
+            {% for product in products %}
+                <div class="product" data-product-id="{{ product.id }}">
+                    <h3>{{ product.name }}</h3>
+                    <div>{{ product.description }}</div>
+                    <div class="price">&pound;{{ product.price_cents|default:0|floatformat:0 }}p</div>
+                    <button type="button" class="check-stock">Check stock</button>
+                    <div class="stock-line" aria-live="polite"></div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            function escapeXml(s) {
+                return String(s)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+            }
+
+            async function checkStock(productCard) {
+                var productId = productCard.dataset.productId;
+                var line = productCard.querySelector(".stock-line");
+                line.textContent = "Checking...";
+                var body =
+                    "<stockCheck>" +
+                    "<productId>" + escapeXml(productId) + "</productId>" +
+                    "<storeId>1</storeId>" +
+                    "</stockCheck>";
+                try {
+                    var resp = await fetch("{% url 'stock_check' %}", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/xml" },
+                        body: body,
+                    });
+                    var text = await resp.text();
+                    line.textContent = "[" + resp.status + "] " + text;
+                } catch (err) {
+                    line.textContent = "Network error: " + err;
+                }
+            }
+
+            document.querySelectorAll(".check-stock").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    checkStock(btn.closest(".product"));
+                });
+            });
+        })();
+    </script>
+{% endblock %}

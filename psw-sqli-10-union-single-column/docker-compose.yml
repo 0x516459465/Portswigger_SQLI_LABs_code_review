@@ -1,0 +1,25 @@
+name: psw-sqli-10-union-single-column
+
+services:
+  web:
+    build: .
+    image: psw-sqli-10-union-single-column:latest
+    container_name: psw-sqli-10-union-single-column
+    hostname: psw-sqli-10-union-single-column
+    ports:
+      - "127.0.0.1:18010:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-10-union-single-column"
+      - "lab.title=SQLi UNION attack - retrieve multiple values in a single column"
+    networks:
+      - psw-sqli-10-union-single-column-net
+
+networks:
+  psw-sqli-10-union-single-column-net:
+    name: psw-sqli-10-union-single-column-net
+    driver: bridge

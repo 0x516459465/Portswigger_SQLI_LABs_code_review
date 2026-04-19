@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if solved %}
+        <div class="solved-banner">
+            <div>FLAG CAPTURED &mdash; the vulnerable <code>TrackingId</code> lookup was held for {{ duration }}s by an injected time delay.</div>
+            <div style="margin-top:0.5rem; font-family:monospace; font-size:1.05rem;">{{ flag }}</div>
+        </div>
+    {% endif %}
+
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table. The result is never
+        reflected and any SQL error is swallowed - successful and failing payloads
+        produce identical response bodies. The only observable server-side effect of
+        a payload is wall-clock time. To solve, exploit the injection to keep the
+        cookie lookup running for at least {{ threshold }} seconds. The backend is
+        PostgreSQL; <code>pg_sleep()</code> is the intended delay primitive, e.g.
+        <code>TrackingId=x'||pg_sleep({{ threshold }})::text||'</code>.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        <p>Browse our collection.</p>
+        <p>Last tracking lookup ran in <span class="timing">{{ duration }}s</span>
+           (threshold for solve: {{ threshold }}s).</p>
+    </div>
+{% endblock %}

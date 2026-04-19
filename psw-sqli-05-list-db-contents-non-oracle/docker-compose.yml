@@ -1,0 +1,62 @@
+name: psw-sqli-05-list-db-contents-non-oracle
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: psw-sqli-05-list-db-contents-non-oracle-db
+    hostname: psw-sqli-05-list-db-contents-non-oracle-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=labrootpassword
+      - MYSQL_DATABASE=shop
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpassword
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-plabrootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: "no"
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-05-list-db-contents-non-oracle"
+      - "lab.component=database"
+    networks:
+      - psw-sqli-05-list-db-contents-non-oracle-net
+
+  web:
+    build: .
+    image: psw-sqli-05-list-db-contents-non-oracle:latest
+    container_name: psw-sqli-05-list-db-contents-non-oracle
+    hostname: psw-sqli-05-list-db-contents-non-oracle
+    ports:
+      - "127.0.0.1:18005:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=shop
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpassword
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-05-list-db-contents-non-oracle"
+      - "lab.title=SQLi listing database contents on non-Oracle"
+      - "lab.component=web"
+    networks:
+      - psw-sqli-05-list-db-contents-non-oracle-net
+
+networks:
+  psw-sqli-05-list-db-contents-non-oracle-net:
+    name: psw-sqli-05-list-db-contents-non-oracle-net
+    driver: bridge

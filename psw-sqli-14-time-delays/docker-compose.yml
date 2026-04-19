@@ -1,0 +1,54 @@
+name: psw-sqli-14-time-delays
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: psw-sqli-14-time-delays-db
+    hostname: db
+    environment:
+      POSTGRES_DB: labdb
+      POSTGRES_USER: labuser
+      POSTGRES_PASSWORD: labpass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U labuser -d labdb"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-14-time-delays"
+      - "lab.role=database"
+    networks:
+      - psw-sqli-14-time-delays-net
+
+  web:
+    build: .
+    image: psw-sqli-14-time-delays:latest
+    container_name: psw-sqli-14-time-delays
+    hostname: psw-sqli-14-time-delays
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:18014:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+      - POSTGRES_DB=labdb
+      - POSTGRES_USER=labuser
+      - POSTGRES_PASSWORD=labpass
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-14-time-delays"
+      - "lab.title=SQLi blind - time delays"
+    networks:
+      - psw-sqli-14-time-delays-net
+
+networks:
+  psw-sqli-14-time-delays-net:
+    name: psw-sqli-14-time-delays-net
+    driver: bridge

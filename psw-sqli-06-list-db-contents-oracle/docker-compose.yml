@@ -1,0 +1,60 @@
+name: psw-sqli-06-list-db-contents-oracle
+
+services:
+  db:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: psw-sqli-06-list-db-contents-oracle-db
+    hostname: psw-sqli-06-list-db-contents-oracle-db
+    environment:
+      # System account password (not used by the app, but required by
+      # the image). The app connects as APP_USER below so USER_TABLES /
+      # USER_TAB_COLUMNS enumeration returns only the lab schema.
+      - ORACLE_PASSWORD=labrootpassword
+      - APP_USER=labuser
+      - APP_USER_PASSWORD=labpassword
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 40
+      start_period: 60s
+    restart: "no"
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-06-list-db-contents-oracle"
+      - "lab.component=database"
+    networks:
+      - psw-sqli-06-list-db-contents-oracle-net
+
+  web:
+    build: .
+    image: psw-sqli-06-list-db-contents-oracle:latest
+    container_name: psw-sqli-06-list-db-contents-oracle
+    hostname: psw-sqli-06-list-db-contents-oracle
+    ports:
+      - "127.0.0.1:18006:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+      - ORACLE_HOST=db
+      - ORACLE_PORT=1521
+      - ORACLE_SERVICE=FREEPDB1
+      - ORACLE_USER=labuser
+      - ORACLE_PASSWORD=labpassword
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-06-list-db-contents-oracle"
+      - "lab.title=SQLi listing database contents on Oracle"
+      - "lab.component=web"
+    networks:
+      - psw-sqli-06-list-db-contents-oracle-net
+
+networks:
+  psw-sqli-06-list-db-contents-oracle-net:
+    name: psw-sqli-06-list-db-contents-oracle-net
+    driver: bridge

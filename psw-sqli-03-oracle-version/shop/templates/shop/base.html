@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}We Like To Shop (Oracle){% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+        header { background: #3a1414; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #fff; text-decoration: none; font-weight: 600; }
+        nav a { margin-left: 1rem; }
+        main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #fff; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .category-list a { display: inline-block; margin-right: 0.75rem; margin-bottom: 0.5rem; padding: 0.35rem 0.75rem; background: #ffe3e0; border-radius: 4px; text-decoration: none; color: #8a1a1a; }
+        .product { border-left: 4px solid #8a1a1a; padding-left: 1rem; }
+        .product.injected { border-left-color: #2b7a2b; background: #eefdee; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .badge.released { background: #dff5df; color: #2b7a2b; }
+        .badge.unreleased { background: #fde2e2; color: #a02020; }
+        .solved-banner { background: #2b7a2b; color: #fff; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-weight: 600; }
+        .error { background: #fde2e2; color: #a02020; padding: 0.6rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace; white-space: pre-wrap; }
+        pre.sql { background: #111; color: #b5ffb5; padding: 0.75rem 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; }
+        footer { text-align: center; color: #888; padding: 2rem 1rem; font-size: 0.85rem; }
+        table.rows { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        table.rows th, table.rows td { border-bottom: 1px solid #eee; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+        table.rows th { background: #faf4f4; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}">We Like To Shop &mdash; Oracle edition</a>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>Training lab &mdash; intentionally vulnerable. Do not deploy.</footer>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="card product">
+        <h2>{{ product.name }}</h2>
+        <p><em>{{ product.category }}</em></p>
+        <p>{{ product.description }}</p>
+        <p>&pound;{{ product.price }}</p>
+        <p><a href="{% url 'home' %}">&larr; back</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}We Like To Shop{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+        header { background: #003b57; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #fff; text-decoration: none; font-weight: 600; }
+        main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #fff; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .solved-banner { background: #2b7a2b; color: #fff; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-weight: 600; }
+        .hint-banner { background: #eef6fb; border-left: 5px solid #003b57; padding: 0.8rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.95rem; }
+        code, .mono { font-family: ui-monospace, Menlo, Consolas, monospace; }
+        table.oob { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        table.oob th, table.oob td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #e2e2e2; vertical-align: top; }
+        table.oob th { background: #fafafa; }
+        .pill { display: inline-block; background: #111; color: #b5ffb5; padding: 0.15rem 0.5rem; border-radius: 4px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.85rem; }
+        footer { text-align: center; color: #888; padding: 2rem 1rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}">We Like To Shop</a>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>Training lab &mdash; intentionally vulnerable. Do not deploy.</footer>
+</body>
+</html>

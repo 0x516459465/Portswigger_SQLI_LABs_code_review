@@ -1,0 +1,25 @@
+name: psw-sqli-08-find-text-column
+
+services:
+  web:
+    build: .
+    image: psw-sqli-08-find-text-column:latest
+    container_name: psw-sqli-08-find-text-column
+    hostname: psw-sqli-08-find-text-column
+    ports:
+      - "127.0.0.1:18008:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-08-find-text-column"
+      - "lab.title=SQLi UNION attack - find column containing text"
+    networks:
+      - psw-sqli-08-find-text-column-net
+
+networks:
+  psw-sqli-08-find-text-column-net:
+    name: psw-sqli-08-find-text-column-net
+    driver: bridge

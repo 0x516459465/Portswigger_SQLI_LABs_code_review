@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    {% if error_message %}
+        <div class="db-error"><strong>Database error:</strong>
+{{ error_message }}</div>
+    {% endif %}
+
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table, but never reflects the
+        result. However, if the query raises an error, the full database error
+        message is echoed back into this page. The backend is PostgreSQL &mdash; a
+        failed <code>CAST(&hellip; AS INT)</code> embeds the offending operand in its
+        error text, letting you leak any scalar from the <code>users</code> table in
+        a single request. Log in at <a href="{% url 'login' %}">/login</a> once you
+        have the administrator password.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        {% if current_user %}
+            <p>Signed in as <strong>{{ current_user.username }}</strong>.</p>
+        {% else %}
+            <p>Browse our collection, or <a href="{% url 'login' %}">sign in</a>.</p>
+        {% endif %}
+    </div>
+{% endblock %}

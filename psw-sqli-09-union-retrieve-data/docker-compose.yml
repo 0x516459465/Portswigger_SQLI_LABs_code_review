@@ -1,0 +1,25 @@
+name: psw-sqli-09-union-retrieve-data
+
+services:
+  web:
+    build: .
+    image: psw-sqli-09-union-retrieve-data:latest
+    container_name: psw-sqli-09-union-retrieve-data
+    hostname: psw-sqli-09-union-retrieve-data
+    ports:
+      - "127.0.0.1:18009:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-09-union-retrieve-data"
+      - "lab.title=SQLi UNION attack - retrieve data from other tables"
+    networks:
+      - psw-sqli-09-union-retrieve-data-net
+
+networks:
+  psw-sqli-09-union-retrieve-data-net:
+    name: psw-sqli-09-union-retrieve-data-net
+    driver: bridge

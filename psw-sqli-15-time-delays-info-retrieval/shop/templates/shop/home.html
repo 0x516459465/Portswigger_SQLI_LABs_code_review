@@ -1,0 +1,24 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="hint-banner">
+        <strong>Lab briefing:</strong> the site looks up the <code>TrackingId</code>
+        cookie against a <code>tracked_users</code> table. The result is never
+        reflected and any SQL error is swallowed - successful and failing payloads
+        produce byte-identical 200 responses. The only observable side channel is
+        wall-clock response time. A <code>users</code> table with <code>username</code>
+        and <code>password</code> columns exists &mdash; extract the administrator
+        password one character at a time by conditioning <code>pg_sleep()</code> on a
+        predicate over it, then log in at <a href="{% url 'login' %}">/login</a>.
+    </div>
+
+    <div class="card">
+        <h1>Welcome</h1>
+        {% if current_user %}
+            <p>Signed in as <strong>{{ current_user.username }}</strong>.</p>
+        {% else %}
+            <p>Browse our collection, or <a href="{% url 'login' %}">sign in</a>.</p>
+        {% endif %}
+    </div>
+{% endblock %}

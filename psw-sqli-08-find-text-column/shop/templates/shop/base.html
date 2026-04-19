@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}We Like To Shop{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+        header { background: #003b57; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #fff; text-decoration: none; font-weight: 600; }
+        nav a { margin-left: 1rem; }
+        main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #fff; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .category-list a { display: inline-block; margin-right: 0.75rem; margin-bottom: 0.5rem; padding: 0.35rem 0.75rem; background: #d9ebf5; border-radius: 4px; text-decoration: none; color: #003b57; }
+        .product { border-left: 4px solid #003b57; padding-left: 1rem; margin-bottom: 0.6rem; }
+        .solved-banner { background: #2b7a2b; color: #fff; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-weight: 600; }
+        .challenge-banner { background: #fff8d1; border-left: 5px solid #b58900; padding: 0.8rem 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        .challenge-banner code { font-size: 1.05rem; font-weight: 700; }
+        .error { background: #fde2e2; color: #a02020; padding: 0.6rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-family: monospace; white-space: pre-wrap; }
+        pre.sql { background: #111; color: #b5ffb5; padding: 0.75rem 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; }
+        footer { text-align: center; color: #888; padding: 2rem 1rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}">We Like To Shop</a>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>Training lab &mdash; intentionally vulnerable. Do not deploy.</footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Home &mdash; We Like To Shop{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>Welcome</h1>
+        <p>Browse our carefully-curated collection of questionable lifestyle products.</p>
+        <h3>Categories</h3>
+        <div class="category-list">
+            {% for category in categories %}
+                <a href="{% url 'filter_products' %}?category={{ category }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Featured</h3>
+        {% for p in featured %}
+            <div class="product">
+                <strong>{{ p.name }}</strong> &mdash; <em>{{ p.category }}</em>
+                <div>{{ p.description }}</div>
+                <div>&pound;{{ p.price }}</div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}

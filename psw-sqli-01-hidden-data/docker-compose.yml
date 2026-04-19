@@ -1,0 +1,25 @@
+name: psw-sqli-01-hidden-data
+
+services:
+  web:
+    build: .
+    image: psw-sqli-01-hidden-data:latest
+    container_name: psw-sqli-01-hidden-data
+    hostname: psw-sqli-01-hidden-data
+    ports:
+      - "127.0.0.1:18001:8000"
+    restart: "no"
+    environment:
+      - DJANGO_SETTINGS_MODULE=sqli_lab.settings
+    labels:
+      - "lab.suite=portswigger"
+      - "lab.topic=sql-injection"
+      - "lab.id=psw-sqli-01-hidden-data"
+      - "lab.title=SQLi in WHERE clause - retrieve hidden data"
+    networks:
+      - psw-sqli-01-hidden-data-net
+
+networks:
+  psw-sqli-01-hidden-data-net:
+    name: psw-sqli-01-hidden-data-net
+    driver: bridge
