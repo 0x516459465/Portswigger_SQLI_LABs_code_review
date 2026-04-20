@@ -1,10 +1,25 @@
 from django.db import models
 
 
+class OracleVarcharField(models.CharField):
+    """CharField that emits VARCHAR2 (not NVARCHAR2) on Oracle.
+
+    Django's Oracle backend defaults CharField to NVARCHAR2 (AL16UTF16).
+    Oracle's catalog views (V$VERSION.BANNER, ALL_TABLES.TABLE_NAME, ...)
+    are VARCHAR2 (AL32UTF8). UNION across the two raises
+    ORA-12704: character set mismatch.
+    """
+
+    def db_type(self, connection):
+        if connection.vendor == "oracle":
+            return f"VARCHAR2({self.max_length})"
+        return super().db_type(connection)
+
+
 class Product(models.Model):
-    name = models.CharField(max_length=200)
-    category = models.CharField(max_length=100)
-    description = models.TextField()
+    name = OracleVarcharField(max_length=200)
+    category = OracleVarcharField(max_length=100)
+    description = OracleVarcharField(max_length=2000)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     released = models.BooleanField(default=True)
 
@@ -24,9 +39,9 @@ class User(models.Model):
     in with them. Hashing would obscure that step.
     """
 
-    username = models.CharField(max_length=150, unique=True)
-    password = models.CharField(max_length=200)
-    email = models.CharField(max_length=254, blank=True, default="")
+    username = OracleVarcharField(max_length=150, unique=True)
+    password = OracleVarcharField(max_length=200)
+    email = OracleVarcharField(max_length=254, blank=True, default="")
     is_admin = models.BooleanField(default=False)
 
     class Meta:
@@ -45,7 +60,7 @@ class Flag(models.Model):
     recover credentials, and actually log in.
     """
 
-    content = models.CharField(max_length=200)
+    content = OracleVarcharField(max_length=200)
 
     class Meta:
         db_table = "flags"

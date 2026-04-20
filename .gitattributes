@@ -1,0 +1,12 @@
+# Force LF line endings for files that run inside Linux containers,
+# regardless of the cloning user's core.autocrlf setting.
+# Without this, Git on Windows rewrites entrypoint.sh shebangs to
+# `#!/bin/sh\r`, which Linux reads as a missing interpreter and fails
+# the container with `exec /app/entrypoint.sh: no such file or directory`.
+
+*.sh        text eol=lf
+*.py        text eol=lf
+*.sql       text eol=lf
+Dockerfile  text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf

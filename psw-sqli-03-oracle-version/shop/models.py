@@ -1,6 +1,21 @@
 from django.db import models
 
 
+class OracleVarcharField(models.CharField):
+    """CharField that emits VARCHAR2 (not NVARCHAR2) on Oracle.
+
+    Django's Oracle backend defaults CharField to NVARCHAR2 (AL16UTF16).
+    Oracle's catalog views (V$VERSION.BANNER, ALL_TABLES.TABLE_NAME, ...)
+    are VARCHAR2 (AL32UTF8). UNION across the two raises
+    ORA-12704: character set mismatch.
+    """
+
+    def db_type(self, connection):
+        if connection.vendor == "oracle":
+            return f"VARCHAR2({self.max_length})"
+        return super().db_type(connection)
+
+
 class Product(models.Model):
     """
     Shop catalog backed by Oracle.
@@ -9,9 +24,9 @@ class Product(models.Model):
     still target this table as `products` (case-insensitive match).
     """
 
-    name = models.CharField(max_length=200)
-    category = models.CharField(max_length=100)
-    description = models.TextField()
+    name = OracleVarcharField(max_length=200)
+    category = OracleVarcharField(max_length=100)
+    description = OracleVarcharField(max_length=2000)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     released = models.BooleanField(default=True)
 
@@ -31,7 +46,7 @@ class Flag(models.Model):
     projects `content` into one of the product columns can surface it.
     """
 
-    content = models.CharField(max_length=200)
+    content = OracleVarcharField(max_length=200)
 
     class Meta:
         db_table = "flags"

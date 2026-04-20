@@ -1,5 +1,7 @@
 from django.db import migrations, models
 
+from shop.models import OracleVarcharField
+
 
 class Migration(migrations.Migration):
 
@@ -20,9 +22,9 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("name", models.CharField(max_length=200)),
-                ("category", models.CharField(max_length=100)),
-                ("description", models.TextField()),
+                ("name", OracleVarcharField(max_length=200)),
+                ("category", OracleVarcharField(max_length=100)),
+                ("description", OracleVarcharField(max_length=2000)),
                 ("price", models.DecimalField(decimal_places=2, max_digits=10)),
                 ("released", models.BooleanField(default=True)),
             ],
@@ -40,7 +42,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("content", models.CharField(max_length=200)),
+                ("content", OracleVarcharField(max_length=200)),
             ],
             options={"db_table": "flags"},
         ),
